@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>What's on today</title>
+  <style>
+    body {
+      background-color: #B51227;
+      color: white;
+      font-family: "Franklin Gothic Book", Arial, sans-serif;
+    }
+
+    h1 {
+      font-family: "Franklin Gothic Demi", Arial, sans-serif;
+    }
+
+    h2 {
+      font-family: Baskerville, serif;
+      font-style: italic;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    table th, table td {
+      border: 1px solid white;
+      padding: 8px;
+      text-align: left;
+    }
+
+    table th {
+      font-family: Baskerville, serif;
+      font-style: italic;
+    }
+  </style>
+  <script>
+    function loadXML() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          displayEvents(this);
+        }
+      };
+      xhttp.open("GET", "http://stalbanscathedral.artifaxevent.com/calendar/downloads/publication/4/events.xml", true);
+      xhttp.send();
+    }
+
+    function displayEvents(xml) {
+      var xslt = new XMLHttpRequest();
+      xslt.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var xsl = this.responseXML;
+          var xmlDoc = xml.responseXML;
+          var xsltProcessor = new XSLTProcessor();
+          xsltProcessor.importStylesheet(xsl);
+          var resultDocument = xsltProcessor.transformToDocument(xmlDoc);
+          document.getElementById("events").innerHTML = new XMLSerializer().serializeToString(resultDocument);
+        }
+      };
+      xslt.open("GET", "https://drive.google.com/file/d/1KfUdg717LVSxW3BZCR4Mb08BBs8PpKzI/export?format=xml", true); 
+      xslt.send();
+    }
+  </script>
+</head>
+<body onload="loadXML()">
+  <h1>What's on today</h1>
+  <div id="events"></div>
+</body>
+</html>
