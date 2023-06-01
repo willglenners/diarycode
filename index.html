@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <script type="text/javascript">
+    function loadXML() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          displayData(this);
+        }
+      };
+      xhttp.open("GET", "events.xml", true);
+      xhttp.send();
+    }
+
+    function displayData(xml) {
+      var xslt = new XMLHttpRequest();
+      xslt.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var xsltProcessor = new XSLTProcessor();
+          xsltProcessor.importStylesheet(this.responseXML);
+          var resultDocument = xsltProcessor.transformToDocument(xml.responseXML);
+          document.getElementById("events-table").innerHTML = new XMLSerializer().serializeToString(resultDocument);
+        }
+      };
+      xslt.open("GET", "events.xslt", true);
+      xslt.send();
+    }
+  </script>
+</head>
+<body onload="loadXML()">
+  <h1>What's on today</h1>
+  <div id="events-table"></div>
+</body>
+</html>
